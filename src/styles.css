@@ -1,61 +1,123 @@
-:root {
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  color: #f2f2f2;
-  background: #050607;
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  font-family: 'Tahoma', 'MS Sans Serif', sans-serif;
+  background-color: #008080;
 }
 
-* { box-sizing: border-box; }
-html, body, #app { width: 100%; height: 100%; margin: 0; overflow: hidden; }
-body { background: #050607; }
-canvas { display: block; width: 100%; height: 100%; }
+.desktop { width: 100vw; height: 100vh; position: relative; }
 
-.panel {
-  position: fixed;
-  top: 14px;
-  left: 14px;
-  width: min(340px, calc(100vw - 28px));
-  max-height: calc(100vh - 28px);
-  overflow: auto;
-  padding: 14px;
-  border: 1px solid rgba(255,255,255,.16);
-  border-radius: 12px;
-  background: rgba(8, 10, 12, .86);
-  backdrop-filter: blur(12px);
+.ie-window {
+  position: absolute;
+  top: 5vh; left: 2.5vw;
+  width: 95vw; height: 90vh;
+  background-color: #c0c0c0;
+  border: outset 2px #fff; border-right-color: #000; border-bottom-color: #000;
+  display: flex; flex-direction: column;
+  box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
   z-index: 10;
 }
 
-.panel h1 { font-size: 16px; margin: 0 0 4px; }
-.panel h2 { font-size: 12px; margin: 16px 0 8px; text-transform: uppercase; letter-spacing: .08em; opacity: .72; }
-.panel p, .panel li { font-size: 12px; line-height: 1.4; color: #c9cdd2; }
-.panel .row { margin: 8px 0; }
-.panel label { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; }
-.panel input[type="range"] { width: 100%; }
-.panel input[type="checkbox"] { transform: translateY(1px); }
-.panel button, .panel select {
-  width: 100%;
-  margin-top: 6px;
-  padding: 8px 10px;
-  border-radius: 8px;
-  border: 1px solid rgba(255,255,255,.18);
-  background: rgba(255,255,255,.08);
-  color: inherit;
+.title-bar {
+  background: linear-gradient(90deg, #000080, #1084d0); color: white;
+  padding: 3px; display: flex; justify-content: space-between; align-items: center;
+  font-weight: bold; font-size: 13px; cursor: grab;
 }
-.panel button:hover { background: rgba(255,255,255,.14); }
-.panel .value { font-variant-numeric: tabular-nums; opacity: .85; }
-.panel .group { padding-top: 4px; border-top: 1px solid rgba(255,255,255,.08); }
-.panel.hidden { display: none; }
+.title-bar:active { cursor: grabbing; }
 
-.hud {
-  position: fixed;
-  right: 14px;
-  bottom: 14px;
-  z-index: 9;
-  padding: 8px 10px;
-  border-radius: 9px;
-  background: rgba(8,10,12,.7);
-  font-size: 11px;
-  color: #d8dce0;
-  line-height: 1.45;
-  pointer-events: none;
+.title-text { display: flex; align-items: center; pointer-events: none; }
+.title-buttons button { background: #c0c0c0; border: inset 1px #fff; border-right-color: #000; border-bottom-color: #000; font-weight: bold; cursor: pointer;}
+
+.menu-bar { padding: 2px 10px; font-size: 12px; border-bottom: 1px solid #fff; display: flex; gap: 15px; }
+.toolbar { padding: 5px; display: flex; gap: 10px; align-items: center; border-bottom: 2px solid #808080; }
+.tool-btn {
+  font-size: 12px; cursor: pointer; padding: 3px 8px;
+  background: #c0c0c0; border: outset 2px #fff; border-right-color: #000; border-bottom-color: #000;
 }
-.hud strong { color: white; }
+.tool-btn:active { border-style: inset; }
+
+.address-bar { display: flex; flex-grow: 1; align-items: center; gap: 10px; font-size: 12px; }
+.address-bar input { flex-grow: 1; font-family: monospace; padding: 2px; }
+
+.kuramoto-controls {
+  background: #e0dfdf; padding: 10px; display: flex; gap: 20px; align-items: center;
+  border-bottom: 2px solid #808080; font-size: 13px;
+}
+
+.control-group { display: flex; flex-direction: column; width: 150px; }
+
+#reset-btn {
+  padding: 5px 15px; background: #c0c0c0;
+  border: outset 2px #fff; border-right-color: #000; border-bottom-color: #000; cursor: pointer;
+}
+#reset-btn:active { border-style: inset; }
+
+.main-layout { display: flex; flex-grow: 1; overflow: hidden; }
+
+.viewport {
+  flex-grow: 1; background: #111; position: relative; overflow: hidden;
+  border: inset 2px #fff; border-right-color: #000; border-bottom-color: #000;
+}
+
+.track-manager {
+  width: 280px; background: #c0c0c0; border-left: 2px solid #fff;
+  display: flex; flex-direction: column; padding: 5px;
+}
+
+.manager-header { font-weight: bold; font-size: 13px; margin-bottom: 5px; border-bottom: 1px solid #808080; padding-bottom: 5px; }
+.add-track-form { display: flex; flex-direction: column; gap: 5px; margin-bottom: 10px; }
+
+.track-list { flex-grow: 1; overflow-y: auto; background: #fff; border: inset 2px #808080; padding: 2px; }
+
+/* REORGANIZACIÓN EN DOS FILAS PARA METER EL VOLUMEN */
+.track-item {
+  display: flex; flex-direction: column; gap: 4px;
+  font-size: 11px; padding: 6px; border-bottom: 1px dashed #ccc; background: #f9f9f9;
+}
+.track-item-row-1 { display: flex; justify-content: space-between; align-items: center; }
+.track-item-row-2 { display: flex; gap: 4px; align-items: center; margin-top: 2px;}
+
+.track-item-name { font-weight: bold; }
+.track-item-actions { display: flex; gap: 4px; }
+.track-item select { font-size: 10px; padding: 1px; max-width: 75px; }
+.track-item button { border: 1px solid #000; cursor: pointer; font-size: 10px; padding: 2px 6px; background: #d8d8d8; }
+.track-item button.mute-btn.is-active { background: #ff3366; color: #fff; }
+
+.track-vol-container { display: flex; align-items: center; gap: 2px; margin-left: auto;}
+.track-vol-container span { font-size: 9px; }
+.vol-slider { width: 55px; }
+
+.status-bar { padding: 3px 10px; font-size: 11px; display: flex; justify-content: space-between; border-top: 1px solid #808080; }
+.state-readout { margin-left: auto; font-size: 12px; font-weight: bold; padding: 4px 10px; border: inset 2px #808080; background: #000; min-width: 220px; text-align: center; font-family: 'Courier New', monospace; }
+.state-disorder { color: #ff5577; } .state-partial  { color: #ffcc33; } .state-stable   { color: #55ff88; }
+.mini-order-bar { width: 100%; height: 4px; background: #999; border: inset 1px #808080; margin-top: 4px; }
+.mini-order-fill { height: 100%; width: 0%; transition: width 0.1s linear; }
+
+.sync-monitor {
+  position: absolute; top: 10vh; right: 5vw; width: 240px;
+  background: #c0c0c0; border: outset 2px #fff; border-right-color: #000; border-bottom-color: #000;
+  box-shadow: 2px 2px 8px rgba(0,0,0,0.5); font-family: 'Tahoma', 'MS Sans Serif', sans-serif;
+  font-size: 12px; z-index: 20;
+}
+.sync-monitor-titlebar {
+  background: linear-gradient(90deg, #000080, #1084d0); color: #fff; font-weight: bold;
+  padding: 3px 6px; display: flex; justify-content: space-between; align-items: center; cursor: grab;
+}
+.sync-monitor-titlebar:active { cursor: grabbing; }
+.sync-monitor-titlebar button { background: #c0c0c0; border: inset 1px #fff; border-right-color: #000; border-bottom-color: #000; font-weight: bold; font-size: 10px; cursor: pointer; }
+.sync-monitor-body { padding: 8px; }
+.global-readout { margin-bottom: 10px; }
+.global-label { font-weight: bold; margin-bottom: 4px; }
+.global-label.is-disorder { color: #cc2244; } .global-label.is-partial  { color: #b8860b; } .global-label.is-stable   { color: #227733; }
+.global-bar-track { width: 100%; height: 10px; background: #fff; border: inset 2px #808080; }
+.global-bar-fill { height: 100%; width: 0%; transition: width 0.15s linear; }
+.global-bar-fill.is-disorder { background: #ff3366; } .global-bar-fill.is-partial  { background: #ffcc00; } .global-bar-fill.is-stable   { background: #33cc66; }
+.global-pct { text-align: right; font-family: 'Courier New', monospace; margin-top: 2px; }
+.track-rows { display: flex; flex-direction: column; gap: 5px; }
+.track-row { display: flex; align-items: center; gap: 6px; }
+.led { width: 8px; height: 8px; border-radius: 50%; border: 1px solid #000; flex-shrink: 0; }
+.track-row-label { width: 55px; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.track-row-bar { flex-grow: 1; height: 6px; background: #fff; border: inset 1px #808080; }
+.track-row-fill { height: 100%; width: 0%; transition: width 0.15s linear; }
