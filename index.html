@@ -9,16 +9,15 @@
 </head>
 <body>
   <div class="desktop">
-    <div class="ie-window">
-
-      <div class="title-bar">
+    
+    <!-- MAIN WINDOW (Ahora mucho más limpia) -->
+    <div class="ie-window" id="main-window">
+      <div class="title-bar" id="main-window-titlebar">
         <div class="title-text">
           <img src="https://win98icons.alexmeub.com/icons/png/internet_explorer-4.png" alt="IE Icon" class="icon" style="width: 16px; height: 16px; margin-right: 5px;">
-          Kuramoto Sequencer - Microsoft Internet Explorer
+          Kuramoto Sequencer - Engine
         </div>
-        <div class="title-buttons">
-          <button>_</button><button>□</button><button>X</button>
-        </div>
+        <div class="title-buttons"><button>_</button><button>□</button><button>X</button></div>
       </div>
 
       <div class="menu-bar">
@@ -26,36 +25,19 @@
       </div>
 
       <div class="toolbar">
-        <button id="start-audio-btn" class="tool-btn" style="font-weight: bold; color: green;">▶ Start Audio Engine</button>
+        <button id="start-audio-btn" class="tool-btn" style="font-weight: bold; color: green;">▶ Start Audio</button>
+        <div class="tool-btn" id="toggle-global-btn">Global Params</div>
         <div class="tool-btn" id="toggle-monitor-btn">Sync Monitor</div>
-        <div class="tool-btn">Refresh</div>
+        <div class="tool-btn" id="toggle-vis-btn">Landscape 3D</div>
+        <button id="panic-btn" class="tool-btn panic-btn">⚠ SYSTEM PANIC</button>
         <div class="address-bar">
           <span>Address</span>
-          <input type="text" value="http://localhost:5173/kuramoto-daw" readonly>
+          <input type="text" value="C:\Windows\Kuramoto\Engine.exe" readonly>
         </div>
-      </div>
-
-      <div class="kuramoto-controls">
-        <div class="control-group">
-          <label>Global Sync (K): <span id="k-val">0.0</span></label>
-          <input type="range" id="k-slider" min="0" max="5" step="0.1" value="0">
-        </div>
-        <div class="control-group">
-          <!-- NUEVO: Ahora indica y controla los BPM -->
-          <label>Tempo (BPM): <span id="bpm-val">120</span></label>
-          <input type="range" id="bpm-slider" min="60" max="240" step="1" value="120">
-        </div>
-        <div class="control-group">
-          <label>ω Spread: <span id="omega-val">0.50</span></label>
-          <input type="range" id="omega-slider" min="0" max="2.5" step="0.05" value="0.5">
-        </div>
-        <button id="reset-btn">Reset Phases</button>
-        <div class="state-readout state-disorder" id="global-state">Estado: —</div>
       </div>
 
       <div class="main-layout">
         <div id="app" class="viewport"></div>
-
         <div class="track-manager">
           <div class="manager-header">Track Manager</div>
           <div class="add-track-form">
@@ -71,9 +53,7 @@
             </select>
             <button id="add-track-btn">Add Track</button>
           </div>
-          <div id="track-list" class="track-list">
-            <!-- La lista de pistas se generará aquí vía JS -->
-          </div>
+          <div id="track-list" class="track-list"></div>
         </div>
       </div>
 
@@ -82,8 +62,70 @@
         <span>My Computer</span>
       </div>
     </div>
-  </div>
 
+    <!-- NUEVO: Global Parameters Window -->
+    <div id="global-window" class="global-window window-anim is-open">
+      <div class="title-bar" id="global-window-titlebar">
+        <div class="title-text">Global_Parameters.exe</div>
+        <div class="title-buttons"><button id="close-global-btn">X</button></div>
+      </div>
+      <div class="global-body">
+        <div class="chaos-pad-container">
+          <div class="chaos-pad-label">Chaos Pad (XY)</div>
+          <div id="chaos-pad" class="chaos-pad">
+            <div id="chaos-cursor" class="chaos-cursor"></div>
+          </div>
+        </div>
+        <div class="sliders-container">
+          <div class="control-group">
+            <label>Global Sync (K): <span id="k-val">0.0</span></label>
+            <input type="range" id="k-slider" min="0" max="5" step="0.1" value="0">
+          </div>
+          <div class="control-group">
+            <label>ω Spread: <span id="omega-val">0.50</span></label>
+            <input type="range" id="omega-slider" min="0" max="2.5" step="0.05" value="0.5">
+          </div>
+          <div class="control-group">
+            <label>Tempo (BPM): <span id="bpm-val">120</span></label>
+            <input type="range" id="bpm-slider" min="60" max="240" step="1" value="120">
+          </div>
+          <button id="reset-btn">Reset Phases</button>
+        </div>
+        <div class="state-readout state-disorder" id="global-state">Estado: —</div>
+      </div>
+    </div>
+    
+    <!-- FX Window -->
+    <div id="fx-window" class="fx-window window-anim">
+      <div class="title-bar" id="fx-window-titlebar">
+        <div class="title-text" id="fx-window-title">FX Rack - Track</div>
+        <div class="title-buttons"><button id="close-fx-btn">X</button></div>
+      </div>
+      <div class="fx-body">
+        <div class="fx-add-section">
+          <select id="fx-type-select">
+            <option value="Delay">PingPong Delay</option>
+            <option value="Distortion">Distortion</option>
+            <option value="Chorus">Chorus</option>
+            <option value="PitchShift">Pitch Shift</option>
+          </select>
+          <button id="add-fx-btn">Add FX</button>
+        </div>
+        <div id="fx-list" class="fx-list"></div>
+      </div>
+    </div>
+
+    <!-- Landscape Window -->
+    <div id="vis-window" class="vis-window window-anim">
+      <div class="title-bar" id="vis-window-titlebar">
+        <div class="title-text">Landscape_Visualizer.exe</div>
+        <div class="title-buttons"><button id="close-vis-btn">X</button></div>
+      </div>
+      <div class="vis-body" id="vis-app">
+      </div>
+    </div>
+
+  </div>
   <script type="module" src="/src/main.js"></script>
 </body>
 </html>

@@ -1,15 +1,7 @@
-// src/ui/syncMonitor.js
-//
-// Panel flotante de SOLO LECTURA. No controla ningún parámetro (eso ya vive
-// en la barra de herramientas / kuramoto-controls de index.html); su único
-// trabajo es comunicar el estado colectivo del sistema en todo momento:
-// el parámetro de orden global y el de cada pista. Es la respuesta directa
-// al requisito de "al menos 1 forma perceptible de comunicar el estado
-// colectivo" del enunciado.
-
 export function createSyncMonitor() {
   const panel = document.createElement('aside');
-  panel.className = 'sync-monitor';
+  // Se añade la clase window-anim para la transición
+  panel.className = 'sync-monitor window-anim'; 
   panel.innerHTML = `
     <div class="sync-monitor-titlebar">
       <span>Sync_Monitor.exe</span>
@@ -27,7 +19,7 @@ export function createSyncMonitor() {
   document.body.appendChild(panel);
 
   panel.querySelector('#sync-monitor-close').onclick = () => {
-    panel.style.display = 'none';
+    panel.classList.remove('is-open');
   };
 
   function stateClass(label) {
@@ -51,7 +43,6 @@ export function createSyncMonitor() {
     panel.querySelector('#sm-global-pct').innerText = `${pct}%`;
 
     const rows = panel.querySelector('#sm-track-rows');
-    // Reutilizamos filas existentes por id para no recrear el DOM cada frame
     const seen = new Set();
     simulation.tracks.forEach(track => {
       seen.add(track.id);
@@ -73,15 +64,19 @@ export function createSyncMonitor() {
       row.querySelector('.track-row-fill').style.width = `${trackPct}%`;
     });
 
-    // Quitar filas de pistas eliminadas
     rows.querySelectorAll('[data-track-id]').forEach(row => {
       if (!seen.has(row.dataset.trackId)) row.remove();
     });
   }
 
   function show() {
-    panel.style.display = 'block';
+    panel.classList.add('is-open');
   }
 
-  return { panel, update, show };
+  // Agregamos una función toggle para facilitar la apertura/cierre
+  function toggle() {
+    panel.classList.toggle('is-open');
+  }
+
+  return { panel, update, show, toggle };
 }
